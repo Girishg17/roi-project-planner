@@ -24,22 +24,28 @@ public class ProjectsApiController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public Mono<ApiResponse<List<ProjectDTO>>> createNewProjects(
-            @Valid @RequestBody Flux<CreateNewProjectsRequest> requestFlux) {
+            @Valid @RequestBody Flux<CreateProjectsRequest> requestFlux) {
         logger.info("Received request to create new projects");
         return requestFlux
                 .doOnNext(request -> logger.debug("Processing project: {}", request))
-                .map(request -> ProjectEntity.createNewProject(
-                        request.name(),
-                        request.requiredCapital(),
-                        request.profit()))
+                .map(this::toProjectEntity)
                 .collectList()
-                .flatMap(projects -> {
-                    logger.info("Saving {} projects", projects.size());
-                    return projectService.addAll(projects)
-                            .collectList()
-                            .doOnSuccess(result -> logger.info("Successfully created {} projects", result.size()))
-                            .map(result -> ApiResponse.success(HttpStatus.CREATED.value(), result));
-                })
+                .flatMap(this::saveProjects)
                 .doOnError(error -> logger.error("Error occurred while creating projects", error));
+    }
+
+    private ProjectEntity toProjectEntity(CreateProjectsRequest request) {
+        return ProjectEntity.createNewProject(
+                request.name(),
+                request.requiredCapital(),
+                request.profit());
+    }
+
+    private Mono<ApiResponse<List<ProjectDTO>>> saveProjects(List<ProjectEntity> projects) {
+        logger.info("Saving {} projects", projects.size());
+        return projectService.addAll(projects)
+                .collectList()
+                .doOnSuccess(result -> logger.info("Successfully created {} projects", result.size()))
+                .map(result -> ApiResponse.success(HttpStatus.CREATED.value(), result));
     }
 }

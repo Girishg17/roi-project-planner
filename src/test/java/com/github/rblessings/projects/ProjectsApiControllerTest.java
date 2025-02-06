@@ -32,14 +32,14 @@ class ProjectsApiControllerTest {
     @Test
     void testCreateNewProjects_Success() {
         // Given
-        CreateNewProjectsRequest request1 = new CreateNewProjectsRequest("Project 1", new BigDecimal("100.00"), new BigDecimal("500.00"));
-        CreateNewProjectsRequest request2 = new CreateNewProjectsRequest("Project 2", new BigDecimal("150.00"), new BigDecimal("800.00"));
+        var request1 = new CreateProjectsRequest("Project 1", new BigDecimal("100.00"), new BigDecimal("500.00"));
+        var request2 = new CreateProjectsRequest("Project 2", new BigDecimal("150.00"), new BigDecimal("800.00"));
 
-        Flux<CreateNewProjectsRequest> requestFlux = Flux.just(request1, request2);
+        Flux<CreateProjectsRequest> requestFlux = Flux.just(request1, request2);
 
         // ProjectDTO mock return
-        ProjectDTO projectDTO1 = new ProjectDTO("1", "Project 1", new BigDecimal("100.00"), new BigDecimal("500.00"), AuditMetadata.empty(), 0L);
-        ProjectDTO projectDTO2 = new ProjectDTO("2", "Project 2", new BigDecimal("150.00"), new BigDecimal("800.00"), AuditMetadata.empty(), 0L);
+        var projectDTO1 = new ProjectDTO("1", "Project 1", new BigDecimal("100.00"), new BigDecimal("500.00"), AuditMetadata.empty(), 0L);
+        var projectDTO2 = new ProjectDTO("2", "Project 2", new BigDecimal("150.00"), new BigDecimal("800.00"), AuditMetadata.empty(), 0L);
 
         // Mock the service call to return a Flux of ProjectDTO
         when(projectService.addAll(anyList())).thenReturn(Flux.just(projectDTO1, projectDTO2));

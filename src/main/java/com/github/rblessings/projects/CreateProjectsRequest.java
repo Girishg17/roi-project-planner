@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 /**
  * DTO for creating a new project. Contains the necessary details for project creation.
  */
-public record CreateNewProjectsRequest(
+public record CreateProjectsRequest(
         @NotBlank(message = "Project name cannot be blank")
         String name,
 

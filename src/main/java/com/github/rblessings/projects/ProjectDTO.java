@@ -4,6 +4,10 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+import static com.github.rblessings.projects.ProjectValidators.requireNonNullAndNonNegative;
+import static com.github.rblessings.projects.ProjectValidators.requireNonNullOrBlank;
+import static java.util.Objects.requireNonNull;
+
 public record ProjectDTO(
         String id,
         String name,
@@ -14,44 +18,30 @@ public record ProjectDTO(
 ) implements Serializable {
 
     public ProjectDTO {
-        // Validate ID: must not be null or blank.
-        Objects.requireNonNull(id, "Project ID must not be null");
-        if (id.isBlank()) {
-            throw new IllegalArgumentException("Project ID must not be blank");
-        }
+        // Validate identifier fields
+        requireNonNullOrBlank(id, () -> "Project ID must not be null or blank");
+        requireNonNullOrBlank(name, () -> "Project name must not be null or blank");
 
-        // Validate name: must not be null or blank.
-        Objects.requireNonNull(name, "Project name must not be null");
-        if (name.isBlank()) {
-            throw new IllegalArgumentException("Project name must not be blank");
-        }
+        // Validate numeric fields
+        requireNonNullAndNonNegative(requiredCapital, () -> "Required capital must not be null and must be non-negative");
+        requireNonNullAndNonNegative(profit, () -> "Profit must not be null and must be non-negative");
 
-        // Validate required capital: must not be null and non-negative.
-        Objects.requireNonNull(requiredCapital, "Required capital must not be null");
-        if (requiredCapital.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("Required capital must be non-negative");
-        }
-
-        // Validate profit: must not be null and non-negative.
-        Objects.requireNonNull(profit, "Profit must not be null");
-        if (profit.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("Profit must be non-negative");
-        }
-
-        // Ensure audit metadata is provided; fields may be null, as Spring Data populates them.
-        Objects.requireNonNull(auditMetadata, "Audit metadata must not be null");
-
-        // Validate version: must not be null.
-        Objects.requireNonNull(version, "Project version must not be null");
+        // Validate audit metadata and version
+        requireNonNull(auditMetadata, "Audit metadata must not be null");
+        requireNonNull(version, "Project version must not be null");
     }
 
     public static ProjectDTO fromEntity(ProjectEntity entity) {
         if (entity == null) {
             throw new IllegalArgumentException("Project entity cannot be null");
         }
-
-        return new ProjectDTO(entity.id(), entity.name(), entity.requiredCapital(), entity.profit(),
-                entity.auditMetadata(), entity.version());
+        return new ProjectDTO(
+                entity.id(),
+                entity.name(),
+                entity.requiredCapital(),
+                entity.profit(),
+                entity.auditMetadata(),
+                entity.version());
     }
 
     @Override
