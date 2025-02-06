@@ -1,3 +1,14 @@
 spring:
   application:
     name: roi-project-planner
+
+  data:
+    mongodb:
+      uri: mongodb://root:secret@localhost:27017/roi-project-planner?authSource=admin
+    redis:
+      host: localhost
+      port: 6379
+
+logging:
+  level:
+    org.springframework.web: DEBUG

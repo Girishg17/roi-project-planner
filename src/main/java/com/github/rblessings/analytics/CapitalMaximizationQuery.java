@@ -1,6 +1,6 @@
 package com.github.rblessings.analytics;
 
-import com.github.rblessings.projects.Project;
+import com.github.rblessings.projects.ProjectDTO;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.Objects;
  * and the initial capital.
  */
 public record CapitalMaximizationQuery(
-        List<Project> availableProjects,
+        List<ProjectDTO> availableProjects,
         int maxProjects,
         BigDecimal initialCapital) {
 

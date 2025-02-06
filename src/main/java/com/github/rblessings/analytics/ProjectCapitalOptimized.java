@@ -1,6 +1,6 @@
 package com.github.rblessings.analytics;
 
-import com.github.rblessings.projects.Project;
+import com.github.rblessings.projects.ProjectDTO;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.Objects;
  * Contains the list of selected projects and the final accumulated capital.
  */
 public record ProjectCapitalOptimized(
-        List<Project> selectedProjects,
+        List<ProjectDTO> selectedProjects,
         BigDecimal finalCapital) {
 
     public ProjectCapitalOptimized {
