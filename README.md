@@ -64,7 +64,7 @@ To run the project locally using Docker:
 
 2. **Start the Backend (API) Core and Its Dependencies:**
     ```bash
-    SPRING_PROFILES_ACTIVE=dev ./gradlew clean bootRun
+    ./gradlew clean bootRun
     ```
 
    **Note:** This command automatically runs the `compose.yaml`, offering an alternative to
@@ -79,7 +79,26 @@ To run the project locally using Docker:
 
 ## API Usage
 
-(Coming soon)
+### Projects
+
+1. To **create** one or more projects, send a POST request:
+
+    ```bash
+    curl -X POST http://localhost:8080/apis/v1/projects \
+         -H "Content-Type: application/json" \
+         -d '[
+               {
+                 "name": "Project 1",
+                 "requiredCapital": 100.00,
+                 "profit": 500.00
+               },
+               {
+                 "name": "Project 2",
+                 "requiredCapital": 200.00,
+                 "profit": 800.00
+               }
+             ]'
+    ```
 
 ---
 

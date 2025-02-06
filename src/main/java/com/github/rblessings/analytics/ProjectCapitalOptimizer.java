@@ -1,6 +1,6 @@
 package com.github.rblessings.analytics;
 
-import com.github.rblessings.projects.Project;
+import com.github.rblessings.projects.ProjectDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Mono;
@@ -21,7 +21,6 @@ import java.util.PriorityQueue;
  * <p>The computation is wrapped in a Reactor {@code Mono} and offloaded to a parallel scheduler.</p>
  */
 public class ProjectCapitalOptimizer {
-
     private static final Logger logger = LoggerFactory.getLogger(ProjectCapitalOptimizer.class);
 
     /**
@@ -54,17 +53,17 @@ public class ProjectCapitalOptimizer {
      * @return a {@link ProjectCapitalOptimized} instance with the selected projects and final capital.
      */
     private ProjectCapitalOptimized computeMaximizedCapital(CapitalMaximizationQuery query) {
-        List<Project> projects = new ArrayList<>(query.availableProjects());
+        List<ProjectDTO> projects = new ArrayList<>(query.availableProjects());
         logger.debug("Number of available projects: {}", projects.size());
 
         // Sort projects by required capital in ascending order.
-        projects.sort(Comparator.comparing(Project::requiredCapital));
+        projects.sort(Comparator.comparing(ProjectDTO::requiredCapital));
         logger.debug("Projects sorted by required capital.");
 
         // Max-heap to choose the project with the highest profit among those affordable.
-        PriorityQueue<Project> profitMaxHeap = new PriorityQueue<>(Comparator.comparing(Project::profit).reversed());
+        var profitMaxHeap = new PriorityQueue<>(Comparator.comparing(ProjectDTO::profit).reversed());
 
-        List<Project> selectedProjects = new ArrayList<>();
+        List<ProjectDTO> selectedProjects = new ArrayList<>();
         BigDecimal currentCapital = query.initialCapital();
         int totalProjects = projects.size();
         int projectIndex = 0;
@@ -76,7 +75,7 @@ public class ProjectCapitalOptimizer {
             // Add all projects whose required capital is within the current capital.
             while (projectIndex < totalProjects
                     && projects.get(projectIndex).requiredCapital().compareTo(currentCapital) <= 0) {
-                Project project = projects.get(projectIndex);
+                ProjectDTO project = projects.get(projectIndex);
                 profitMaxHeap.offer(project);
                 logger.debug("Project {} (profit: {}) is affordable and added to the heap.", project.name(), project.profit());
                 projectIndex++;
@@ -89,7 +88,7 @@ public class ProjectCapitalOptimizer {
             }
 
             // Select the project with the highest profit.
-            Project chosenProject = profitMaxHeap.poll();
+            ProjectDTO chosenProject = profitMaxHeap.poll();
             selectedProjects.add(chosenProject);
             currentCapital = currentCapital.add(chosenProject.profit());
             logger.info("Selected project {}. Updated capital: {}", chosenProject.name(), currentCapital);
