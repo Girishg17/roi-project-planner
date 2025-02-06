@@ -1,0 +1,3 @@
+spring:
+  application:
+    name: roi-project-planner
