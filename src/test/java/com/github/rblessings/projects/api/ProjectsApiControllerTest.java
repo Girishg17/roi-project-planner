@@ -1,5 +1,7 @@
-package com.github.rblessings.projects;
+package com.github.rblessings.projects.api;
 
+import com.github.rblessings.projects.model.AuditMetadata;
+import com.github.rblessings.projects.model.ProjectDTO;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
