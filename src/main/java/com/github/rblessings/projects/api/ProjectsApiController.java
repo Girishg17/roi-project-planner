@@ -1,5 +1,7 @@
-package com.github.rblessings.projects;
+package com.github.rblessings.projects.api;
 
+import com.github.rblessings.projects.model.ProjectDTO;
+import com.github.rblessings.projects.model.ProjectEntity;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,9 +25,11 @@ public class ProjectsApiController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public Mono<ApiResponse<List<ProjectDTO>>> createNewProjects(
+    public Mono<ApiResponse<List<ProjectDTO>>> createProjects(
             @Valid @RequestBody Flux<CreateProjectsRequest> requestFlux) {
+
         logger.info("Received request to create new projects");
+
         return requestFlux
                 .doOnNext(request -> logger.debug("Processing project: {}", request))
                 .map(this::toProjectEntity)
@@ -35,14 +39,12 @@ public class ProjectsApiController {
     }
 
     private ProjectEntity toProjectEntity(CreateProjectsRequest request) {
-        return ProjectEntity.createNewProject(
-                request.name(),
-                request.requiredCapital(),
-                request.profit());
+        return ProjectEntity.createNewProject(request.name(), request.requiredCapital(), request.profit());
     }
 
     private Mono<ApiResponse<List<ProjectDTO>>> saveProjects(List<ProjectEntity> projects) {
         logger.info("Saving {} projects", projects.size());
+
         return projectService.addAll(projects)
                 .collectList()
                 .doOnSuccess(result -> logger.info("Successfully created {} projects", result.size()))

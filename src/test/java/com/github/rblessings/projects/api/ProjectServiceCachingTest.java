@@ -1,5 +1,9 @@
-package com.github.rblessings.projects;
+package com.github.rblessings.projects.api;
 
+import com.github.rblessings.projects.model.AuditMetadata;
+import com.github.rblessings.projects.model.ProjectDTO;
+import com.github.rblessings.projects.model.ProjectEntity;
+import com.github.rblessings.projects.model.ProjectRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,14 +32,14 @@ class ProjectServiceCachingTest {
     private static final int REDIS_PORT = 6379;
 
     @Container
-    static GenericContainer<?> redisContainer = new GenericContainer<>(DockerImageName.parse("redis:7.4.2"))
-            .waitingFor(Wait.forListeningPort())
-            .withExposedPorts(REDIS_PORT);
+    private static final GenericContainer<?> REDIS_CONTAINER = new GenericContainer<>(DockerImageName.parse("redis:7.4.2"))
+                    .waitingFor(Wait.forListeningPort())
+                    .withExposedPorts(REDIS_PORT);
 
     @DynamicPropertySource
     static void dynamicPropertySource(DynamicPropertyRegistry registry) {
-        registry.add("spring.data.redis.host", redisContainer::getHost);
-        registry.add("spring.data.redis.port", () -> redisContainer.getMappedPort(REDIS_PORT));
+        registry.add("spring.data.redis.host", REDIS_CONTAINER::getHost);
+        registry.add("spring.data.redis.port", () -> REDIS_CONTAINER.getMappedPort(REDIS_PORT));
     }
 
     @MockitoBean

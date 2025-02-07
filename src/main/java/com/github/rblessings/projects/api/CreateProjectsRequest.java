@@ -1,4 +1,4 @@
-package com.github.rblessings.projects;
+package com.github.rblessings.projects.api;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;

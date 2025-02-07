@@ -1,7 +1,7 @@
 package com.github.rblessings.analytics;
 
-import com.github.rblessings.projects.AuditMetadata;
-import com.github.rblessings.projects.ProjectDTO;
+import com.github.rblessings.projects.model.AuditMetadata;
+import com.github.rblessings.projects.model.ProjectDTO;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;
