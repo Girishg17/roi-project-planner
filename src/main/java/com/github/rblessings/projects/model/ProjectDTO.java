@@ -1,11 +1,11 @@
-package com.github.rblessings.projects;
+package com.github.rblessings.projects.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-import static com.github.rblessings.projects.ProjectValidators.requireNonNullAndNonNegative;
-import static com.github.rblessings.projects.ProjectValidators.requireNonNullOrBlank;
+import static com.github.rblessings.projects.model.Validators.requireNonNullAndNonNegative;
+import static com.github.rblessings.projects.model.Validators.requireNonNullOrBlank;
 import static java.util.Objects.requireNonNull;
 
 public record ProjectDTO(

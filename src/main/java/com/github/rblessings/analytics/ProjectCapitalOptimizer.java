@@ -1,6 +1,6 @@
 package com.github.rblessings.analytics;
 
-import com.github.rblessings.projects.ProjectDTO;
+import com.github.rblessings.projects.model.ProjectDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Mono;
@@ -13,23 +13,19 @@ import java.util.List;
 import java.util.PriorityQueue;
 
 /**
- * The ProjectCapitalOptimizer class provides a method to select up to k projects from a list
- * such that the final capital is maximized. The algorithm uses a greedy approach in which at each
- * step, all projects affordable with the current capital are added to a max-heap, and the project
- * with the highest profit is chosen.
+ * The ProjectCapitalOptimizer class selects up to k projects to maximize final capital.
+ * It uses a greedy algorithm, adding affordable projects to a max-heap and selecting the one with the highest profit at each step.
  *
  * <p>The computation is wrapped in a Reactor {@code Mono} and offloaded to a parallel scheduler.</p>
  */
-public class ProjectCapitalOptimizer {
+public final class ProjectCapitalOptimizer {
     private static final Logger logger = LoggerFactory.getLogger(ProjectCapitalOptimizer.class);
 
     /**
-     * Maximizes the final capital based on the given query.
+     * Maximizes the final capital based on the provided query.
      *
-     * @param query the capital maximization query containing available projects, maximum selections,
-     *              and initial capital.
-     * @return a {@code Mono} emitting a {@link ProjectCapitalOptimized} result containing the list of
-     * selected projects and the final capital.
+     * @param query the capital maximization query containing available projects, max selections, and initial capital.
+     * @return a {@code Mono} emitting a {@link ProjectCapitalOptimized} containing the selected projects and final capital.
      * @throws IllegalArgumentException if the query or its available projects list is null.
      */
     public Mono<ProjectCapitalOptimized> maximizeCapital(CapitalMaximizationQuery query) {
@@ -39,6 +35,7 @@ public class ProjectCapitalOptimizer {
         }
 
         logger.info("Starting capital maximization with initial capital: {}", query.initialCapital());
+
         // Offload the CPU-bound computation to a parallel scheduler.
         return Mono.fromCallable(() -> computeMaximizedCapital(query))
                 .subscribeOn(Schedulers.parallel())
@@ -47,10 +44,10 @@ public class ProjectCapitalOptimizer {
     }
 
     /**
-     * Performs the core greedy algorithm to select projects and maximize capital.
+     * Performs the greedy algorithm to select projects and maximize capital.
      *
      * @param query the capital maximization query.
-     * @return a {@link ProjectCapitalOptimized} instance with the selected projects and final capital.
+     * @return a {@link ProjectCapitalOptimized} with the selected projects and final capital.
      */
     private ProjectCapitalOptimized computeMaximizedCapital(CapitalMaximizationQuery query) {
         List<ProjectDTO> projects = new ArrayList<>(query.availableProjects());

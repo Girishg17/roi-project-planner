@@ -1,23 +1,23 @@
 package com.github.rblessings.analytics;
 
-import com.github.rblessings.projects.ProjectDTO;
+import com.github.rblessings.projects.model.ProjectDTO;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-import static com.github.rblessings.projects.ProjectValidators.requireNonNullAndNoNullElements;
-import static com.github.rblessings.projects.ProjectValidators.requireNonNullAndNonNegative;
+import static com.github.rblessings.projects.model.Validators.requireNonNull;
+import static com.github.rblessings.projects.model.Validators.requireNonNullAndNonNegative;
 
 /**
  * Immutable record representing the result of a capital maximization operation.
- * Contains the list of selected projects and the final accumulated capital.
+ * Contains the selected projects and the final accumulated capital.
  */
 public record ProjectCapitalOptimized(
         List<ProjectDTO> selectedProjects,
         BigDecimal finalCapital) {
 
     public ProjectCapitalOptimized {
-        requireNonNullAndNoNullElements(selectedProjects, () -> "Selected projects list must not be null nor contain null elements");
+        requireNonNull(selectedProjects, () -> "Selected projects list must not be null");
         requireNonNullAndNonNegative(finalCapital, () -> "Final capital must not be null and must be non-negative");
     }
 }

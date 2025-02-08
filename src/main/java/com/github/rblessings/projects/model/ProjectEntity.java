@@ -1,4 +1,4 @@
-package com.github.rblessings.projects;
+package com.github.rblessings.projects.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
@@ -8,14 +8,15 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-import static com.github.rblessings.projects.ProjectValidators.requireNonNullAndNonNegative;
-import static com.github.rblessings.projects.ProjectValidators.requireNonNullOrBlank;
+import static com.github.rblessings.projects.model.Validators.requireNonNullAndNonNegative;
+import static com.github.rblessings.projects.model.Validators.requireNonNullOrBlank;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Immutable record representing a project with a unique name, the required capital to initiate the project,
- * and the profit yielded upon completion.
- * The name is uniquely indexed for optimized lookup performance.
+ * Immutable record representing a project with a unique name, required capital to initiate the project,
+ * and profit upon completion.
+ *
+ * <p> The project name is indexed for optimized lookup performance. </p>
  */
 @Document(collection = "projects")
 public record ProjectEntity(
@@ -41,7 +42,7 @@ public record ProjectEntity(
 
     /**
      * Creates a new {@code ProjectEntity} with null ID, version, and an empty
-     * {@code AuditMetadata} to be populated by Spring Data upon persistence.
+     * {@code AuditMetadata}, to be populated by Spring Data upon persistence.
      */
     public static ProjectEntity createNewProject(String name, BigDecimal requiredCapital, BigDecimal profit) {
         return new ProjectEntity(null, name, requiredCapital, profit, AuditMetadata.empty(), null);

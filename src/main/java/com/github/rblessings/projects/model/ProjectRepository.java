@@ -1,4 +1,4 @@
-package com.github.rblessings.projects;
+package com.github.rblessings.projects.model;
 
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 

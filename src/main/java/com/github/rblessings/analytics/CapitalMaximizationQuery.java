@@ -1,16 +1,15 @@
 package com.github.rblessings.analytics;
 
-import com.github.rblessings.projects.ProjectDTO;
+import com.github.rblessings.projects.model.ProjectDTO;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-import static com.github.rblessings.projects.ProjectValidators.*;
+import static com.github.rblessings.projects.model.Validators.*;
 
 /**
  * Immutable record representing a query to maximize capital.
- * Contains the list of available projects, the maximum number of projects that can be completed,
- * and the initial capital.
+ * Includes the list of available projects, the maximum number of projects to complete, and the initial capital.
  */
 public record CapitalMaximizationQuery(
         List<ProjectDTO> availableProjects,

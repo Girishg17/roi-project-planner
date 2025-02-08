@@ -1,6 +1,6 @@
-package com.github.rblessings.projects;
+package com.github.rblessings.projects.model;
 
-import com.github.rblessings.configuration.MongoDBConfiguration;
+import com.github.rblessings.configuration.MongoConfiguration;
 import com.github.rblessings.configuration.TestcontainersConfiguration;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 @DataMongoTest
-@Import({MongoDBConfiguration.class, TestcontainersConfiguration.class})
+@Import({MongoConfiguration.class, TestcontainersConfiguration.class})
 class ProjectRepositoryTest {
     private final ProjectRepository projectRepository;
 
