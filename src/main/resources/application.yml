@@ -9,6 +9,50 @@ spring:
       host: localhost
       port: 6379
 
+resilience4j:
+  circuitbreaker:
+    instances:
+      projectsApi:
+        registerHealthIndicator: true
+        slidingWindowSize: 5
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 3
+        eventConsumerBufferSize: 10
+
+  retry:
+    instances:
+      projectController:
+        maxAttempts: 3
+        waitDuration: 2s
+
+  ratelimiter:
+    instances:
+      projectController:
+        limitForPeriod: 5  # Max 5 requests per refresh period
+        limitRefreshPeriod: 10s
+        timeoutDuration: 1s
+
+  bulkhead:
+    instances:
+      projectController:
+        maxConcurrentCalls: 10
+        maxWaitDuration: 500ms
+
+  timelimiter:
+    instances:
+      projectController:
+        timeoutDuration: 3s
+        cancelRunningFuture: true
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
 logging:
   level:
     org.springframework.web: DEBUG

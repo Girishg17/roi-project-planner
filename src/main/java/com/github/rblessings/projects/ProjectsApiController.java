@@ -1,5 +1,10 @@
 package com.github.rblessings.projects;
 
+import io.github.resilience4j.bulkhead.annotation.Bulkhead;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+import io.github.resilience4j.retry.annotation.Retry;
+import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +28,11 @@ public class ProjectsApiController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
+    @CircuitBreaker(name = "projectsApi", fallbackMethod = "createNewProjectsFallback")
+    @Retry(name = "projectsApi")
+    @RateLimiter(name = "projectsApi")
+    @Bulkhead(name = "projectsApi")
+    @TimeLimiter(name = "projectsApi")
     public Mono<ApiResponse<List<ProjectDTO>>> createNewProjects(
             @Valid @RequestBody Flux<CreateProjectsRequest> requestFlux) {
         logger.info("Received request to create new projects");
@@ -47,5 +57,12 @@ public class ProjectsApiController {
                 .collectList()
                 .doOnSuccess(result -> logger.info("Successfully created {} projects", result.size()))
                 .map(result -> ApiResponse.success(HttpStatus.CREATED.value(), result));
+    }
+
+    private Mono<ApiResponse<List<ProjectDTO>>> createNewProjectsFallback(
+            Flux<CreateProjectsRequest> requestFlux, Throwable t) {
+        logger.error("Fallback triggered: {}", t.getMessage());
+        return Mono.just(ApiResponse.error(HttpStatus.SERVICE_UNAVAILABLE.value(),
+                "Service temporarily unavailable. Please try again later."));
     }
 }
